@@ -1,0 +1,56 @@
+#!/usr/bin/env node
+
+/**
+ * dependencies
+ */
+
+var cdnex = require('../lib')
+var program = require('commander')
+var updateNotifier = require('update-notifier')
+var chalk = require('chalk')
+var pkg = require('../package.json')
+
+/**
+ * setup cli
+ */
+
+updateNotifier({ pkg: pkg }).notify()
+
+program
+  .version(pkg.version)
+  .usage('cdnex <file or directory> [options]')
+  .option('-c, --cdn <url>', 'cdn url to use')
+  .option('-o, --output <location>', 'location of output file or folder')
+  .option('-q, --quiet', 'dont output anything except errors')
+  .option('-f, --force', 'force output to overwrite')
+  .option('-v, --validate', 'validate cdn url')
+
+/**
+ * output help
+ */
+
+program.on('--help', function(){
+  console.log('  Examples:')
+  console.log('')
+  console.log('    $ cdnex site -o dist -c https://my-cdn.com')
+  console.log('    $ cdnex site/about.html -c https://my-cdn.com')
+  console.log('')
+})
+
+if (!process.argv.slice(2).length) {
+  return program.outputHelp()
+}
+
+/**
+ * run
+ */
+
+program.parse(process.argv)
+
+cdnex.render(program)
+  .then(function(rendered) {
+    if (rendered) console.log(rendered)
+  })
+  .catch(function(err) {
+    console.log(chalk.red(err))
+  })
