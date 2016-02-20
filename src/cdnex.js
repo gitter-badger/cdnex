@@ -17,33 +17,38 @@ import chalk from 'chalk'
 export async function render (options = {}) {
   try {
     if (!options.cdn) {
-      throw new Error('no cdn url was specified')
+      throw new Error('no cdn url was specified!')
     }
 
     if (options.validate && !validator.isURL(options.cdn)) {
-      throw new Error(`${options.cdn} is not a valid domain name`)
+      throw new Error(`${options.cdn} is not a valid domain name.`)
     }
 
     var input
-    if (!options.src) {
-      /* input is a file/dirname, read from disk */
-      input = options.input || options.args[0] || undefined
+    if (!options.src) { /* input is a file/dirname, read from disk */
+      input = options.input || options.args[0]
+      if (!input) throw new Error('no input file or directory was specified.')
+
       let exists = await fs.exists(input)
+      if (!exists) throw new Error(`"${input}" does not exist!`)
 
-      if (!input) throw new Error('no input file or directory was specified')
-      if (!exists) throw new Error(`"${input}" does not exist`)
-
-      /* is this a dir? */
       let stats = await fs.lstat(input)
       var isDir = stats.isDirectory()
-    } else {
-      /* input data was passed through directly, no need to read from disk */
+    } else { /* input data was passed through as string */
+      if (options.input) {
+        throw new Error('dont specify both input and src. only choose one!')
+      }
       input = options.src
     }
 
     var cdnexed
     if (isDir) {
-      let files = await dn(glob)(path.resolve(input) + '/**/*.{html,css}')
+      options.pattern = options.pattern || '/**/*.{html,css}'
+      if (options.pattern.charAt(0) !== '/') {
+        options.pattern = '/' + options.pattern
+      }
+
+      let files = await dn(glob)(path.resolve(input) + options.pattern)
 
       cdnexed = await Promise.all(files.map(async file => {
         try {
@@ -70,21 +75,20 @@ export async function render (options = {}) {
 
         /* abort if they dont */
         if (!overwrite) {
-          console.log(chalk.red('please change your output and try again'))
+          console.log(chalk.red('change your output and try again.'))
           process.exit(1)
         }
       }
 
       /* output to file(s) */
       if (typeof cdnexed === 'object') {
-        /* make sure output directory exists */
         await fs.ensureDir(options.output)
 
         await Promise.all(cdnexed.map(obj => {
-          /* generate output folder in filename */
+          /* generate output filename */
           obj.output = obj.file.replace(input, options.output)
 
-          /* output paths without cwd */
+          /* log paths without the cwd */
           if (!options.quiet) {
             console.log('rendering',
               obj.file.replace(process.cwd() + '/', ''), 'to',
@@ -117,20 +121,18 @@ export async function render (options = {}) {
  * prepend url to file
  */
 
-export function prepend (content, options = {}) {
+function prepend (content, options = {}) {
   /* add trailing slash */
   if (options.cdn.slice(-1) !== '/') options.cdn += '/'
 
   /* read file if filename was passed as content */
-  var promise
+  var promise = Promise.resolve(content)
   if (path.extname(content)) {
     promise = fs.readFile(content, 'utf8')
-  } else {
-    promise = Promise.resolve(content)
   }
 
   options.onlyExtensions = (options.onlyExtensions || [
-    'html', 'css',
+    'html', 'css', 'js',
     'png', 'jpe?g', 'gif', 'svg',
     'woff2?', 'eot', 'ttf', 'otf',
     'mp4', 'webm', 'ogg',

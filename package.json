@@ -1,7 +1,7 @@
 {
   "name": "cdnex",
   "version": "0.1.0",
-  "description": "prepends cdn urls to your html and css",
+  "description": "prepend cdn urls to your source files",
   "author": "Jason Maurer <j@maur.co>",
   "license": "MIT",
   "homepage": "https://github.com/jsonmaur/cdnex",
