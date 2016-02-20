@@ -20,6 +20,10 @@ export async function render (options = {}) {
       throw new Error('no cdn url was specified!')
     }
 
+    if (!options.validate && options.validate !== false) {
+      options.validate = true
+    }
+
     if (options.validate && !validator.isURL(options.cdn)) {
       throw new Error(`${options.cdn} is not a valid domain name.`)
     }

@@ -23,7 +23,7 @@ program
   .option('-o, --output <location>', 'location of output file or folder')
   .option('-q, --quiet', 'dont output anything except errors')
   .option('-f, --force', 'force output to overwrite')
-  .option('-v, --validate', 'validate cdn url')
+  .option('-v, --validate <bool>', 'validate cdn url')
 
 /**
  * output help

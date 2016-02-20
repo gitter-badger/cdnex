@@ -57,7 +57,7 @@ You can also use cdnex programmatically.
   - `src` An input string to parse. Note this is different from `input`, as that is a path to read from, and this is the actual content.
   - `output` Output path for your rendered file(s). If no output is supplied, the result will be sent to the result of the promise.
   - `cdn` The CDN url to use when rendering
-  - `validate` `[Default: false]` Whether to make sure CDN url is a valid url.
+  - `validate` `[Default: true]` Whether to make sure CDN url is a valid url.
   - `force` `[Default: false]` Whether to force overwriting any existing files. You will be prompted to overwrite if this is set to `false`.
   - `pattern` `[Default: **/*.{html,css}]` A glob-style pattern of the files to include when searching a directory. Relative to your `input` path.
   - `ignore` A string or array of regex url(s) to ignore when prepending the CDN url. (Note: this is for the urls in your files, not the files themselves. Use `pattern` for that.)
