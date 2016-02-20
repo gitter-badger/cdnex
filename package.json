@@ -29,7 +29,7 @@
   "scripts": {
     "lint": "eslint src",
     "pretest": "npm run lint",
-    "test": "echo 'no tests yet' && exit 0",
+    "test": "tape tests/cdnex.test.js | tap-spec",
     "prebuild": "rm -rf lib",
     "build": "babel src -d lib --source-maps true --no-comments",
     "watch": "npm run build -- -w",

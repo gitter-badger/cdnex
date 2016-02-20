@@ -42,6 +42,7 @@ export async function render (options = {}) {
       if (options.input) {
         throw new Error('dont specify both input and src. only choose one!')
       }
+
       input = options.src
     }
 
@@ -125,13 +126,13 @@ export async function render (options = {}) {
  * prepend url to file
  */
 
-function prepend (content, options = {}) {
+export function prepend (content, options = {}) {
   /* add trailing slash */
   if (options.cdn.slice(-1) !== '/') options.cdn += '/'
 
   /* read file if filename was passed as content */
   var promise = Promise.resolve(content)
-  if (path.extname(content)) {
+  if (path.extname(content).match(/^\.([a-z0-9]+)$/ig)) {
     promise = fs.readFile(content, 'utf8')
   }
 
@@ -168,14 +169,14 @@ function prepend (content, options = {}) {
 
     let ignoreRegex = options.ignore ? `(?!${options.ignore})` : ''
 
+    let regexP1 = /(\(|\"|\'|\=)/
+    let regexP2 = /(\/)?([^\(\)\/,\'\"\s](?:(?!\/\/|<|>|;|:|@|\s)[^\"|\'])*)/
+    let regexP3 = /(\?|#|>|\"|\'|\)|\s)/
+
     let regex = new RegExp(
-      '(\\(|\"|\'|\\=)'
-      + ignoreRegex
-      + '(\\/)?([^\\(\\)\\/,\'\"\\s](?:(?!\\/\\/|<|>|;|:|\\s)[^\"|\'])*)'
-      + extensionsRegex
-      + '(\\?|#|\"|\'|\\)|\\s)',
-      'ig'
-    )
+      regexP1.source + ignoreRegex +
+      regexP2.source + extensionsRegex +
+      regexP3.source, 'ig')
 
     return data
       .replace(regex, `$1${options.cdn}$3$4$5`)

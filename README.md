@@ -34,7 +34,7 @@ $ cdnex src -o dist -c https://mycdn.com
 $ cdnex src -o dist -p "**/*.html" -e "pdf,docx" -c https://mycdn.com
 
 # specify a regex ignore pattern #
-$ cdnex src -o dist -c https://mycdn.com -i "\/img\/"a
+$ cdnex src -o dist -c https://mycdn.com -i "\/img\/"
 
 # usage & options #
 Usage:  cdnex <file or directory> [options]
