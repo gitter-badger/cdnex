@@ -59,11 +59,11 @@ You can also use cdnex programmatically.
   - `cdn` The CDN url to use when rendering
   - `validate` `[Default: false]` Whether to make sure CDN url is a valid url.
   - `force` `[Default: false]` Whether to force overwriting any existing files. You will be prompted to overwrite if this is set to `false`.
-  - `pattern` `[Default: **/*.{html,css}]` A glob-style pattern of the files to include when searching a directory.
+  - `pattern` `[Default: **/*.{html,css}]` A glob-style pattern of the files to include when searching a directory. Relative to your `input` path.
   - `ignore` A string or array of regex url(s) to ignore when prepending the CDN url. (Note: this is for the urls in your files, not the files themselves. Use `pattern` for that.)
   - `extensions` An array of any extra extensions that extend from the [defaults](#extensions).
   - `onlyExtensions` An array of extensions that will overwrite the [defaults](#extensions).
-  - `quiet` `[Default: false]` Whether to hold back from all output excluding errors.
+  - `quiet` `[Default: false]` Whether to hold back from all output except errors.
 
 <a name="api-examples"></a>
 ### Examples
@@ -91,8 +91,8 @@ cdnex.render({
 cdnex.render({
   src: fs.readFileSync('index.html', 'utf8'),
   cdn: 'https://mycdn.com',
-}).then(function(res) {
-  console.log(res)
+}).then(function(rendered) {
+  console.log(rendered)
 }).catch(function(err) {
   console.log(err)
 })
@@ -104,7 +104,7 @@ cdnex.render({
   onlyExtensions: ['.css', '.js'],
 })
 
-/* add .pdf extension to default extensions */
+/* add .pdf extension to the default extensions */
 cdnex.render({
   ...
   extensions: ['.pdf']
@@ -117,4 +117,10 @@ cdnex.render({
 By default, cdnex will prepend the CDN url to all internal paths with the following extensions: `.html`, `.css`, `.js`, `.png`, `.jpg`, `.jpeg`, `.gif`, `.svg`, `.woff`, `.woff2`, `.eot`, `.ttf`, `.otf`, `.mp4`, `.webm`, `.ogg`, `.mp3`, `.wav`.
 
 <a name="help"></a>
-## Testing and Contributing
+## Testing & Contributing
+```bash
+npm install
+npm test
+```
+
+If you want to contribute or come across an issue that you know how to fix, [just do it](https://www.youtube.com/watch?v=ZXsQAXx_ao0).
