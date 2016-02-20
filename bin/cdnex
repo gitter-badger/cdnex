@@ -21,9 +21,13 @@ program
   .usage('cdnex <file or directory> [options]')
   .option('-c, --cdn <url>', 'cdn url to use')
   .option('-o, --output <location>', 'location of output file or folder')
+  .option('-e, --extensions <exts>', 'comma-seperated list of added extensions')
+  .option('-x, --only-extensions <exts>', 'comma-seperated list of default extensions')
+  .option('-p, --pattern <ptrn>', 'glob pattern to match when searching a directory')
+  .option('-i, --ignore <regex>', 'regex pattern of urls to ignore')
   .option('-q, --quiet', 'dont output anything except errors')
   .option('-f, --force', 'force output to overwrite')
-  .option('-v, --validate <bool>', 'validate cdn url')
+  .option('-v, --validate <true/false>', 'validate cdn url')
 
 /**
  * output help
@@ -32,8 +36,10 @@ program
 program.on('--help', function(){
   console.log('  Examples:')
   console.log('')
-  console.log('    $ cdnex site -o dist -c https://my-cdn.com')
-  console.log('    $ cdnex site/about.html -c https://my-cdn.com')
+  console.log('    $ cdnex src -o dist -c https://my-cdn.com')
+  console.log('    $ cdnex src/about.html -c https://my-cdn.com')
+  console.log('    $ cdnex src -p "**/*.html" -c https://my-cdn.com')
+  console.log('    $ cdnex src -e "pdf,doc" -c https://my-cdn.com')
   console.log('')
 })
 

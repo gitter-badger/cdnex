@@ -135,6 +135,14 @@ function prepend (content, options = {}) {
     promise = fs.readFile(content, 'utf8')
   }
 
+  if (typeof options.extensions === 'string') {
+    options.extensions = options.extensions.split(',')
+  }
+
+  if (typeof options.onlyExtensions === 'string') {
+    options.onlyExtensions = options.onlyExtensions.split(',')
+  }
+
   options.onlyExtensions = (options.onlyExtensions || [
     'html', 'css', 'js',
     'png', 'jpe?g', 'gif', 'svg',

@@ -19,7 +19,8 @@
     "production",
     "build",
     "html",
-    "css"
+    "css",
+    "cli"
   ],
   "main": "lib",
   "bin": {

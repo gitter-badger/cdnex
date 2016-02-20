@@ -1,13 +1,15 @@
 # cdnex
 [![Build Status](https://travis-ci.org/jsonmaur/cdnex.svg?branch=master)](https://travis-ci.org/jsonmaur/cdnex)
 
-Creates an easy way to prepend your CDN urls to your HTML and CSS files. It can be integrated into any existing workflow, and customized to meet the needs of your project. Use the CLI tool or implement programmatically using the API.
+Creates an easy way to prepend your CDN urls to your HTML and CSS files. It can be integrated into any existing workflow, and customized to meet the needs of your project. Use the CLI tool or implement programmatically.
 
 ## Getting Started
 ```bash
-npm install cdnex --save
-# or to use the cli globally #
+# to use the cli #
 npm install cdnex -g
+
+# to implement programmatically #
+npm install cdnex --save
 ```
 
 - [Usage with CLI](#cli)
@@ -28,18 +30,28 @@ $ cdnex src/index.html --output dist/index.html --cdn https://mycdn.com
 # you can also specify directories #
 $ cdnex src -o dist -c https://mycdn.com
 
-# options #
+# specify pattern and additional extensions #
+$ cdnex src -o dist -p "**/*.html" -e "pdf,docx" -c https://mycdn.com
+
+# specify a regex ignore pattern #
+$ cdnex src -o dist -c https://mycdn.com -i "\/img\/"a
+
+# usage & options #
 Usage:  cdnex <file or directory> [options]
 
-  Options:
+Options:
 
-    -h, --help               output usage information
-    -V, --version            output the version number
-    -c, --cdn <url>          cdn url to use
-    -o, --output <location>  location of output file or folder
-    -q, --quiet              dont output anything except errors
-    -f, --force              force output to overwrite
-    -v, --validate           validate cdn url
+  -h, --help                    output usage information
+  -V, --version                 output the version number
+  -c, --cdn <url>               cdn url to use
+  -o, --output <location>       location of output file or folder
+  -e, --extensions <exts>       comma-seperated list of added extensions
+  -x, --only-extensions <exts>  comma-seperated list of default extensions
+  -p, --pattern <ptrn>          glob pattern to match when searching a directory
+  -i, --ignore <regex>          regex pattern of urls to ignore
+  -q, --quiet                   dont output anything except errors
+  -f, --force                   force output to overwrite
+  -v, --validate <true/false>   validate cdn url
 ```
 
 <a name="api"></a>
