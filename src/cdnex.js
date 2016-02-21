@@ -20,6 +20,10 @@ export async function render (options = {}) {
       throw new Error('no cdn url was specified!')
     }
 
+    if (!options.args) {
+      options.args = []
+    }
+
     if (!options.validate && options.validate !== false) {
       options.validate = true
     }
@@ -70,7 +74,14 @@ export async function render (options = {}) {
     if (options.output) {
       /* warn if overwriting */
       var outputExists = await fs.exists(options.output)
-      if (outputExists && !options.force) {
+      if (outputExists) {
+        /* doesnt really exist if its just an empty directory */
+        outputExists = (await dn(glob)(`${options.output}/**/*`, {
+          nodir: true,
+        })).length > 0
+      }
+
+      if (outputExists && !options.force && options.args) {
         /* ask if they want to overwrite */
         const { overwrite } = await dn(inquirer.prompt, a => [null, a])([{
           type: 'confirm',
@@ -80,9 +91,10 @@ export async function render (options = {}) {
 
         /* abort if they dont */
         if (!overwrite) {
-          console.log(chalk.red('change your output and try again.'))
-          process.exit(1)
+          throw new Error(chalk.red('change your output and try again.'))
         }
+      } else if (outputExists && !options.args && !options.force) {
+        throw new Error('output already exists')
       }
 
       /* output to file(s) */

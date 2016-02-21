@@ -1,8 +1,9 @@
 var test = require('tape')
-var fs = require('fs-promise')
+var fs = require('fs-extra')
+var path = require('path')
 var cdnex = require('../lib')
 
-test('cdnex', function(t) {
+test('prepend()', function(t) {
 
   t.test('regex matching for html', function(st) {
     st.plan(21)
@@ -220,3 +221,134 @@ test('cdnex', function(t) {
   })
 
 })
+
+test('render()', function(t) {
+
+  t.test('exceptions', function(st) {
+    st.throws(
+      cdnex.render(),
+      'catches no cdn url')
+    st.throws(
+      cdnex.render({
+        cdn: 'hey',
+        validate: true,
+      }),
+      'catches invalid url')
+    st.throws(
+      cdnex.render({
+        cdn: 'http://cdn.co',
+        input: ''
+      }),
+      'no input provided')
+    st.throws(
+      cdnex.render({
+        cdn: 'http://cdn.co',
+        input: 'index.html',
+        src: '<html></html>',
+      }),
+      'input and src both specified')
+    st.throws(
+      cdnex.render({
+        cdn: 'http://cdn.co',
+        input: 'index.html',
+      }),
+      'input file doesnt exist')
+    st.end()
+  })
+
+  t.test('input/output file', function(st) {
+    var file = __dirname + '/tmp.html'
+    var outputFile = __dirname + '/tmp.new.html'
+    var html = '<html><body><img src="/img/test.jpg"></body></html>'
+    fs.writeFileSync(file, html)
+
+    cdnex.render({
+      cdn: 'http://cdn.co',
+      input: file,
+      output: outputFile,
+      quiet: true,
+    }).then(function() {
+      st.equal(
+        fs.readFileSync(outputFile, 'utf8'),
+        '<html><body><img src="http://cdn.co/img/test.jpg"></body></html>',
+        'wrote to output file')
+      fs.removeSync(file)
+      fs.removeSync(outputFile)
+      st.end()
+    }).catch(st.error)
+  })
+
+  t.test('input/output directory', function(st) {
+    var dirSrc = __dirname + '/tmp/src'
+    var dirDist = __dirname + '/tmp/dist'
+
+    var html = '<html><body><img src="/img/test.jpg"></body></html>'
+    var css = 'body { background: url("/img/test.jpg") }'
+
+    fs.removeSync(dirSrc)
+    fs.ensureDirSync(dirSrc)
+
+    fs.writeFileSync(dirSrc + '/tmp.html', html)
+    fs.writeFileSync(dirSrc + '/tmp.css', css)
+
+    cdnex.render({
+      cdn: 'http://cdn.co',
+      input: dirSrc,
+      output: dirDist,
+      quiet: true,
+      force: true,
+      // pattern: '**/*.{html.css}',
+    }).then(function() {
+      st.equal(
+        fs.readFileSync(dirDist + '/tmp.html', 'utf8'),
+        '<html><body><img src="http://cdn.co/img/test.jpg"></body></html>',
+        'wrote to output html file')
+      st.equal(
+        fs.readFileSync(dirDist + '/tmp.css', 'utf8'),
+        'body { background: url("http://cdn.co/img/test.jpg") }',
+        'wrote to output css file')
+      st.throws(
+        cdnex.render({
+          cdn: 'http://cdn.co',
+          input: dirSrc,
+          output: dirDist,
+          force: false,
+          quiet: true,
+        }),
+        'stops if not overwriting')
+      fs.removeSync(path.dirname(dirSrc))
+      st.end()
+    }).catch(st.error)
+  })
+
+  t.test('output to string', function(st) {
+    cdnex.render({
+      cdn: 'http://cdn.co',
+      src: '<html><body><img src="/img/test.jpg"></body></html>',
+    }).then(function(rendered) {
+      st.equal(
+        rendered,
+        '<html><body><img src="http://cdn.co/img/test.jpg"></body></html>',
+        'output rendered string rather than file')
+      st.end()
+    }).catch(st.error)
+  })
+
+
+})
+
+
+// cdnex.render({
+//   // src: fs.readFileSync('src/index.html', 'utf8'),
+//   input: 'src',
+//   // pattern: '**/*.html',
+//   output: 'dist',
+//   cdn: 'https://global.cdn.zab.',
+//   // validate: false,
+//   // quiet: false,
+//   // force: true,
+//   ignore: ['/yo/', '/_cdnex_/'],
+//   // ignore: '/img/',
+//   extensions: ['js'],
+//   // onlyExtensions: ['js']
+// })
