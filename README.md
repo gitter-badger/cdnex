@@ -1,5 +1,6 @@
 # cdnex
 [![Build Status](https://travis-ci.org/jsonmaur/cdnex.svg?branch=master)](https://travis-ci.org/jsonmaur/cdnex)
+[![Coverage Status](https://coveralls.io/repos/github/jsonmaur/cdnex/badge.svg?branch=master)](https://coveralls.io/github/jsonmaur/cdnex?branch=master)
 
 Creates an easy way to prepend your CDN urls to your HTML and CSS files. It can be integrated into any existing workflow, and customized to meet the needs of your project. Use the CLI tool or implement programmatically.
 

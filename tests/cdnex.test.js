@@ -253,6 +253,16 @@ test('render()', function(t) {
         input: 'index.html',
       }),
       'input file doesnt exist')
+    fs.writeFileSync('test.html', '')
+    st.throws(
+      cdnex.render({
+        cdn: 'http://cdn.co',
+        src: '',
+        output: 'index.html',
+        force: false,
+      }),
+      'doesnt overwrite when not forced')
+    fs.removeSync('test.html')
     st.end()
   })
 
@@ -336,19 +346,3 @@ test('render()', function(t) {
 
 
 })
-
-
-// cdnex.render({
-//   // src: fs.readFileSync('src/index.html', 'utf8'),
-//   input: 'src',
-//   // pattern: '**/*.html',
-//   output: 'dist',
-//   cdn: 'https://global.cdn.zab.',
-//   // validate: false,
-//   // quiet: false,
-//   // force: true,
-//   ignore: ['/yo/', '/_cdnex_/'],
-//   // ignore: '/img/',
-//   extensions: ['js'],
-//   // onlyExtensions: ['js']
-// })

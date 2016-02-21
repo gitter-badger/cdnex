@@ -2,6 +2,7 @@
  * dependencies
  */
 
+import 'babel-polyfill'
 import dn from 'denodeify'
 import glob from 'glob'
 import path from 'path'
