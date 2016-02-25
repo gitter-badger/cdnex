@@ -1,4 +1,6 @@
 # cdnex
+
+[![Join the chat at https://gitter.im/jsonmaur/cdnex](https://badges.gitter.im/jsonmaur/cdnex.svg)](https://gitter.im/jsonmaur/cdnex?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/jsonmaur/cdnex.svg?branch=master)](https://travis-ci.org/jsonmaur/cdnex)
 [![Coverage Status](https://coveralls.io/repos/github/jsonmaur/cdnex/badge.svg?branch=master)](https://coveralls.io/github/jsonmaur/cdnex?branch=master)
 
